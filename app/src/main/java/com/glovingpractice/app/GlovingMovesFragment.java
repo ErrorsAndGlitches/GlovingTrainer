@@ -6,10 +6,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class GlovingMovesFragment extends Fragment
 {
     private static final String ARG_SECTION_NUMBER = "section_number";
+
+    private final GlovingMoves mGlovingMoves;
 
     public static GlovingMovesFragment newInstance(int sectionNumber)
     {
@@ -20,11 +23,20 @@ public class GlovingMovesFragment extends Fragment
         return fragment;
     }
 
+    public GlovingMovesFragment()
+    {
+        mGlovingMoves = new GlovingMoves();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_random_moves, container, false);
+        View view = inflater.inflate(R.layout.fragment_random_moves, container, false);
+        TextView textView = (TextView) view.findViewById(R.id.section_label);
+        textView.setText(getMoves());
+
+        return view;
     }
 
     @Override
@@ -32,5 +44,16 @@ public class GlovingMovesFragment extends Fragment
     {
         super.onAttach(activity);
         ((RandomMoves) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+    }
+
+    private String getMoves()
+    {
+        String moves = "";
+        for (String move : mGlovingMoves.getMoves())
+        {
+            moves += move;
+            moves += "\n";
+        }
+        return moves;
     }
 }
