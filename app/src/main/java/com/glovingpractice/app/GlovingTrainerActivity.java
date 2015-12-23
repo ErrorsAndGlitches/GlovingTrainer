@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class RandomMoves extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks
+public class GlovingTrainerActivity extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks
 {
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence             mTitle;

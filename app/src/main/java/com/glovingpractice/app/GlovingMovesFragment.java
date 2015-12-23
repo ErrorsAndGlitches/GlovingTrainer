@@ -43,7 +43,7 @@ public class GlovingMovesFragment extends Fragment
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        ((RandomMoves) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+        ((GlovingTrainerActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
     private String getMoves()
