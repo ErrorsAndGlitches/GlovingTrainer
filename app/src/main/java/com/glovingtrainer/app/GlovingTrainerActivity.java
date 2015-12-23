@@ -1,6 +1,7 @@
 package com.glovingtrainer.app;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -30,7 +31,7 @@ public class GlovingTrainerActivity extends AppCompatActivity implements Navigat
     {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-            .replace(R.id.container, ListMovesFragment.newInstance(position + 1))
+            .replace(R.id.container, getFragmentForPosition(position))
             .commit();
     }
 
@@ -60,17 +61,29 @@ public class GlovingTrainerActivity extends AppCompatActivity implements Navigat
         actionBar.setTitle(mTitle);
     }
 
+    private Fragment getFragmentForPosition(int position)
+    {
+        switch(position)
+        {
+        case 0:
+            return new MovesGeneratorFragment();
+        case 1:
+        default:
+            return new ListMovesFragment();
+        }
+    }
+
     public void onSectionAttached(int number)
     {
         switch (number)
         {
+        case 0:
+            mTitle = getString(R.string.title_moves_generator);
+            break;
         case 1:
             mTitle = getString(R.string.title_list_moves);
             break;
         case 2:
-            mTitle = getString(R.string.title_section2);
-            break;
-        case 3:
             mTitle = getString(R.string.title_section3);
             break;
         }

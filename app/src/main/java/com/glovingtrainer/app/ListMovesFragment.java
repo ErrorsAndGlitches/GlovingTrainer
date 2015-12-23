@@ -10,18 +10,7 @@ import android.widget.TextView;
 
 public class ListMovesFragment extends Fragment
 {
-    private static final String ARG_SECTION_NUMBER = "section_number";
-
     private final GlovingMoves mGlovingMoves;
-
-    public static ListMovesFragment newInstance(int sectionNumber)
-    {
-        ListMovesFragment fragment = new ListMovesFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     public ListMovesFragment()
     {
@@ -43,7 +32,7 @@ public class ListMovesFragment extends Fragment
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        ((GlovingTrainerActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+        ((GlovingTrainerActivity) activity).onSectionAttached(2);
     }
 
     private String getEnumeratedMoves()
