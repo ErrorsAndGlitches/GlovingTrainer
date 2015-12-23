@@ -1,18 +1,48 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                tools:context=".RandomMoves$PlaceholderFragment">
+<TableLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:stretchColumns="*">
 
-    <TextView
-            android:id="@+id/section_label"
-            android:gravity="center"
-            android:textSize="40sp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+    <TableRow
+            android:paddingBottom="40dp">
+        <RadioGroup
+                android:layout_span="2"
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/move_trigger_type_group">
+            <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Speech"
+                    android:id="@+id/speech_button"/>
 
-</RelativeLayout>
+            <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Timer"
+                    android:checked="true"
+                    android:id="@+id/timer_button"/>
+        </RadioGroup>
+
+        <NumberPicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/move_timeout_picker"/>
+    </TableRow>
+
+    <TableRow>
+        <TextView
+                android:layout_span="3"
+                android:id="@+id/section_label"
+                android:singleLine="false"
+                android:gravity="center"
+                android:textSize="40sp"/>
+    </TableRow>
+</TableLayout>
