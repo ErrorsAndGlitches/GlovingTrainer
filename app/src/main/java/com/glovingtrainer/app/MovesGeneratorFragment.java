@@ -31,7 +31,7 @@ public class MovesGeneratorFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_random_moves, container, false);
+        View view = inflater.inflate(R.layout.fragment_moves_generator, container, false);
         mGlovingMoveTextView = (TextView) view.findViewById(R.id.section_label);
         setRandomMove();
         return view;

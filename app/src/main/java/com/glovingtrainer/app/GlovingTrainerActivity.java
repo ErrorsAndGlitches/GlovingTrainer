@@ -18,7 +18,7 @@ public class GlovingTrainerActivity extends AppCompatActivity implements Navigat
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_random_moves);
+        setContentView(R.layout.activity_gloving_tutor);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
             getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
