@@ -13,11 +13,32 @@ import java.util.List;
 
 class GlovingMoves
 {
-    private static final String GLOVING_MOVES_FILENAME = "gloving_moves.txt";
-    private static final File   GLOVING_MOVES_FILE     = new File(Environment.getExternalStorageDirectory(),
-                                                                  GLOVING_MOVES_FILENAME);
+    private static final    String       GLOVING_MOVES_FILENAME = "gloving_moves.txt";
+    private static final    File         GLOVING_MOVES_FILE     = new File(Environment.getExternalStorageDirectory(),
+                                                                           GLOVING_MOVES_FILENAME);
+    private static volatile GlovingMoves s_instance             = null;
 
     private Collection<String> mGlovingMoves;
+
+    static GlovingMoves getInstance()
+    {
+        if (s_instance == null)
+        {
+            synchronized (GLOVING_MOVES_FILE)
+            {
+                if (s_instance == null)
+                {
+                    s_instance = new GlovingMoves();
+                }
+            }
+        }
+
+        return s_instance;
+    }
+
+    private GlovingMoves()
+    {
+    }
 
     Collection<String> getMoves()
     {

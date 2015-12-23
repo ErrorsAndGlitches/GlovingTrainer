@@ -30,7 +30,7 @@ public class GlovingTrainerActivity extends AppCompatActivity implements Navigat
     {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-            .replace(R.id.container, GlovingMovesFragment.newInstance(position + 1))
+            .replace(R.id.container, ListMovesFragment.newInstance(position + 1))
             .commit();
     }
 
@@ -65,7 +65,7 @@ public class GlovingTrainerActivity extends AppCompatActivity implements Navigat
         switch (number)
         {
         case 1:
-            mTitle = getString(R.string.title_section1);
+            mTitle = getString(R.string.title_list_moves);
             break;
         case 2:
             mTitle = getString(R.string.title_section2);

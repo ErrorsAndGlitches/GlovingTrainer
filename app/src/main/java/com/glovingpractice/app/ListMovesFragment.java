@@ -8,24 +8,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class GlovingMovesFragment extends Fragment
+public class ListMovesFragment extends Fragment
 {
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     private final GlovingMoves mGlovingMoves;
 
-    public static GlovingMovesFragment newInstance(int sectionNumber)
+    public static ListMovesFragment newInstance(int sectionNumber)
     {
-        GlovingMovesFragment fragment = new GlovingMovesFragment();
+        ListMovesFragment fragment = new ListMovesFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public GlovingMovesFragment()
+    public ListMovesFragment()
     {
-        mGlovingMoves = new GlovingMoves();
+        mGlovingMoves = GlovingMoves.getInstance();
     }
 
     @Override
@@ -34,7 +34,7 @@ public class GlovingMovesFragment extends Fragment
     {
         View view = inflater.inflate(R.layout.fragment_random_moves, container, false);
         TextView textView = (TextView) view.findViewById(R.id.section_label);
-        textView.setText(getMoves());
+        textView.setText(getEnumeratedMoves());
 
         return view;
     }
@@ -46,14 +46,17 @@ public class GlovingMovesFragment extends Fragment
         ((GlovingTrainerActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
-    private String getMoves()
+    private String getEnumeratedMoves()
     {
-        String moves = "";
+        StringBuilder builder = new StringBuilder();
+        int count = 0;
         for (String move : mGlovingMoves.getMoves())
         {
-            moves += move;
-            moves += "\n";
+            builder.append(++count)
+                .append(") ")
+                .append(move)
+                .append('\n');
         }
-        return moves;
+        return builder.toString();
     }
 }
