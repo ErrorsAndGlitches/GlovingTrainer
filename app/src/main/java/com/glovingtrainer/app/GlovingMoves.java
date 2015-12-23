@@ -1,4 +1,4 @@
-package com.glovingpractice.app;
+package com.glovingtrainer.app;
 
 import android.os.Environment;
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Gloving Practice</string>
+    <string name="app_name">Gloving Trainer</string>
 
     <string name="title_list_moves">List Moves</string>
     <string name="title_section2">Section 2</string>
