@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import java.util.concurrent.TimeUnit;
@@ -42,6 +43,7 @@ public class MovesGeneratorFragment extends Fragment
     {
         super.onResume();
         mShouldUpdateMoves = true;
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mGlovingMoveUpdater.run();
     }
 
@@ -49,6 +51,7 @@ public class MovesGeneratorFragment extends Fragment
     public void onPause()
     {
         super.onPause();
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mShouldUpdateMoves = false;
     }
 
