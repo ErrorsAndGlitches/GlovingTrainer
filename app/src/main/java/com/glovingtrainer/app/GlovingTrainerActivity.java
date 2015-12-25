@@ -7,7 +7,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.MenuItem;
 
 public class GlovingTrainerActivity extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks
 {
@@ -40,18 +39,23 @@ public class GlovingTrainerActivity extends AppCompatActivity implements Navigat
     {
         if (!mNavigationDrawerFragment.isDrawerOpen())
         {
-            getMenuInflater().inflate(R.menu.random_moves, menu);
             restoreActionBar();
             return true;
         }
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
+    public void onSectionAttached(int number)
     {
-        int id = item.getItemId();
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
+        switch (number)
+        {
+        case 0:
+            mTitle = getString(R.string.title_moves_generator);
+            break;
+        case 1:
+            mTitle = getString(R.string.title_list_moves);
+            break;
+        }
     }
 
     private void restoreActionBar()
@@ -70,22 +74,6 @@ public class GlovingTrainerActivity extends AppCompatActivity implements Navigat
         case 1:
         default:
             return new ListMovesFragment();
-        }
-    }
-
-    public void onSectionAttached(int number)
-    {
-        switch (number)
-        {
-        case 0:
-            mTitle = getString(R.string.title_moves_generator);
-            break;
-        case 1:
-            mTitle = getString(R.string.title_list_moves);
-            break;
-        case 2:
-            mTitle = getString(R.string.title_section3);
-            break;
         }
     }
 }
