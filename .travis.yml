@@ -17,7 +17,7 @@ git:
   depth: 1
 branches:
   only:
-    - travis_ci
+    - master
 matrix:
   fast_finish: true
 # Emulator Management: Create, Start and Wait
