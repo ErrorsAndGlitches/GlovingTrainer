@@ -1,4 +1,4 @@
-# Android Gloving Application
+# Android Gloving Application [![Build Status](https://travis-ci.org/MusicalNeutrino/GlovingTrainer.svg?branch=master)](https://travis-ci.org/MusicalNeutrino/GlovingTrainer)
 
 This application is used to help glovers practice, hone their skills, and inspire creativity.
 
