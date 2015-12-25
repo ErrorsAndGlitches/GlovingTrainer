@@ -2,6 +2,10 @@
 
 This application is used to help glovers practice, hone their skills, and inspire creativity.
 
+<p align="center">
+  <img src="https://s3-us-west-2.amazonaws.com/musical.neutrino.public/gloving_trainer_app.png"/>
+</p>
+
 # How To Set Up
 
 The application is not very polished, but does what it fundamentally should. To upload a list of moves, create a file
