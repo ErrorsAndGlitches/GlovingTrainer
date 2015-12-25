@@ -86,6 +86,11 @@ class SpeechListener implements RecognitionListener
 
     void stopListening()
     {
+        if (mSpeechRecognizer == null)
+        {
+            return;
+        }
+
         mSpeechRecognizer.stopListening();
         mSpeechRecognizer.destroy();
         mSpeechRecognizer = null;
