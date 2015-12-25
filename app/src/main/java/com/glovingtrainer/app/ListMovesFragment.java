@@ -32,7 +32,7 @@ public class ListMovesFragment extends Fragment
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        ((GlovingTrainerActivity) activity).onSectionAttached(2);
+        ((GlovingTrainerActivity) activity).onSectionAttached(1);
     }
 
     private String getEnumeratedMoves()

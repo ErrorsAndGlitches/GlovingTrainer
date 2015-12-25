@@ -104,7 +104,7 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        ((GlovingTrainerActivity) activity).onSectionAttached(1);
+        ((GlovingTrainerActivity) activity).onSectionAttached(0);
     }
 
     @Override
