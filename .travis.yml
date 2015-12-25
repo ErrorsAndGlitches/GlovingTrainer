@@ -1,0 +1,19 @@
+language: android
+android:
+  components:
+    - android-21
+    - build-tools-21.1.1
+    - tools
+git:
+  depth: 1
+branches:
+  only:
+    - travis_ci
+matrix:
+  fast_finish: true
+before_cache:
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
