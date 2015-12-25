@@ -21,13 +21,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Speech"
+                    android:checked="true"
                     android:id="@+id/speech_button"/>
 
             <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Timer"
-                    android:checked="true"
                     android:id="@+id/timer_button"/>
         </RadioGroup>
 

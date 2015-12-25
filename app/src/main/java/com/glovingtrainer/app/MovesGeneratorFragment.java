@@ -1,9 +1,12 @@
 package com.glovingtrainer.app;
 
 import android.app.Activity;
+import android.content.Context;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,22 +18,28 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class MovesGeneratorFragment extends Fragment
+public class MovesGeneratorFragment extends Fragment implements SpeechListener.SpeechCallback
 {
-    private static final int TIMEOUT_MIN     = 1;
-    private static final int TIMEOUT_MAX     = 20;
-    private static final int TIMEOUT_DEFAULT = 5;
+    private static final int    TIMEOUT_MIN     = 1;
+    private static final int    TIMEOUT_MAX     = 20;
+    private static final int    TIMEOUT_DEFAULT = 5;
+    private static final float  DISABLED_ALPHA  = 0.5f;
+    private static final float  ENABLED_ALPHA   = 1.0f;
+    private static final String NEXT            = "next";
+
 
     private final GlovingMoves                     mGlovingMoves;
     private final Handler                          mUpdateTextHandler;
     private final GlovingMoveUpdater               mGlovingMoveUpdater;
     private final MoveTriggerTypeOnCheckedListener mCheckedListener;
     private final TimeoutPickerScrollListener      mTimeoutScrollListener;
+    private       SpeechListener                   mSpeechListener;
     private       TextView                         mGlovingMoveTextView;
     private       NumberPicker                     mMoveTimeoutPicker;
-    private       boolean                          mShouldUpdateMoves;
+    private       boolean                          mShouldTimeoutMoves;
     private       int                              mTimeoutDuration;
 
     public MovesGeneratorFragment()
@@ -40,7 +49,17 @@ public class MovesGeneratorFragment extends Fragment
         mGlovingMoveUpdater = new GlovingMoveUpdater();
         mCheckedListener = new MoveTriggerTypeOnCheckedListener();
         mTimeoutScrollListener = new TimeoutPickerScrollListener();
+        mShouldTimeoutMoves = false;
         mTimeoutDuration = TIMEOUT_DEFAULT;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        mSpeechListener = new SpeechListener(getActivity());
+        AudioManager am = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+        am.setStreamMute(AudioManager.STREAM_MUSIC, true);
     }
 
     @Override
@@ -67,9 +86,9 @@ public class MovesGeneratorFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        mShouldUpdateMoves = true;
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        mGlovingMoveUpdater.run();
+        disableTimeoutPicker();
+        mSpeechListener.startListening(this);
     }
 
     @Override
@@ -77,7 +96,8 @@ public class MovesGeneratorFragment extends Fragment
     {
         super.onPause();
         getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        mShouldUpdateMoves = false;
+        mSpeechListener.stopListening();
+        mShouldTimeoutMoves = false;
     }
 
     @Override
@@ -85,6 +105,15 @@ public class MovesGeneratorFragment extends Fragment
     {
         super.onAttach(activity);
         ((GlovingTrainerActivity) activity).onSectionAttached(1);
+    }
+
+    @Override
+    public void onResults(List<String> results)
+    {
+        if (!results.isEmpty() && results.get(0).trim().toLowerCase().equals(NEXT))
+        {
+            setRandomMove();
+        }
     }
 
     private void setRandomMove()
@@ -102,12 +131,24 @@ public class MovesGeneratorFragment extends Fragment
         mTimeoutDuration = duration;
     }
 
+    private void enableTimeoutPicker()
+    {
+        mMoveTimeoutPicker.setEnabled(true);
+        mMoveTimeoutPicker.setAlpha(ENABLED_ALPHA);
+    }
+
+    private void disableTimeoutPicker()
+    {
+        mMoveTimeoutPicker.setEnabled(false);
+        mMoveTimeoutPicker.setAlpha(DISABLED_ALPHA);
+    }
+
     private final class GlovingMoveUpdater implements Runnable
     {
         @Override
         public void run()
         {
-            if (mShouldUpdateMoves)
+            if (mShouldTimeoutMoves)
             {
                 setRandomMove();
                 mUpdateTextHandler.postDelayed(mGlovingMoveUpdater, TimeUnit.SECONDS.toMillis(getDuration()));
@@ -117,9 +158,6 @@ public class MovesGeneratorFragment extends Fragment
 
     private final class MoveTriggerTypeOnCheckedListener implements RadioGroup.OnCheckedChangeListener
     {
-        private static final float DISABLED_ALPHA = 0.5f;
-        private static final float ENABLED_ALPHA  = 1.0f;
-
         private RadioButton mSpeechRadioButton;
         private RadioButton mTimerRadioButton;
 
@@ -135,13 +173,16 @@ public class MovesGeneratorFragment extends Fragment
         {
             if (checkedId == mSpeechRadioButton.getId())
             {
-                mMoveTimeoutPicker.setEnabled(false);
-                mMoveTimeoutPicker.setAlpha(DISABLED_ALPHA);
+                mShouldTimeoutMoves = false;
+                disableTimeoutPicker();
+                mSpeechListener.startListening(MovesGeneratorFragment.this);
             }
             else if (checkedId == mTimerRadioButton.getId())
             {
-                mMoveTimeoutPicker.setEnabled(true);
-                mMoveTimeoutPicker.setAlpha(ENABLED_ALPHA);
+                mSpeechListener.stopListening();
+                mShouldTimeoutMoves = true;
+                enableTimeoutPicker();
+                mGlovingMoveUpdater.run();
             }
             else
             {
