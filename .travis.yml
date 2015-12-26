@@ -25,3 +25,17 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+deploy:
+  provider: s3
+  access_key_id:
+    secure: PMJPrbeSKnT7nE1QHgRFn4LGmibsXrOm3ewdM6l9e+QapE63kV+HT8hkLEc97CjzBgfqMAax3AGYWVlz/Ud1muiGMIDU41JaoCiCkG5DXNxdo0CuRuYjEh0XBSSpxrZAzTDECLzzYyJXgeHsPLq+w7A1pEf5OTJ93YFX3HibI3JLBZkoyCoRkrBX1fmXnQm6b23ErbKYY5UdiBQb90WmM1HvI95lLlheRRxpfpZKHDMZ8amjbDa/oJbEVPE20X2plX3dhMusKx17Gn3LW0wG32fV7tU+0x+g4i6Ic9GB+Oe19UW8+0MCPW4ZAvm9tbe/tMDN15Ga50iLwXsXz6sh64g1ax9i/cs/lvjNl+L+OGyBf8CNnoYmYfj7HS0Hjv+4TI0D3OwsmuVT3Pa96MNctpt3XbGnHCjkjrXOh5g0c4jvoFxd/5S5pqAgGHZw5G1sfMG6l6v+dYLoAcvUf7OBoCeTK039rRKcATNG6sWQSCCdamcJXtfOSyGb5XJntsuVYNz5jBt3BYFDIvTE89+FjBoJ+b4A24mMx5vjsbKtVdxmZDVcx33imMWiw5tQmngUsq83ulfqTkWUFn5roDdl6G8jIr3uql0/a25F1I9FO5wfPkCh7UR3hjJjo0rwLgGWMxRlAUecNY3TL+WHC1x3CYOH7TNkkPjkQnF/mDODj38=
+  secret_access_key:
+    secure: JgMbJjH3LpvfLcfQcJ3srKvjNeyKZnD6jLvNH1yhG+8kCrMWz7IDyFQnOKG4M93YyG0QJ0X5QSAQuxBYBZMYuLgJ7kXw405ac/hVDHhfkoEPovBNlhsBiOGT4EswEJXomu9zCZ+jAXYHt0umzFhky/2UZ3MwOK7MdlGA7FJ3u1PbPnr25WKHoesduzL4RiXde05w92J1kuq7UbW/i53jpyc0UFagyPMkf9F2stAzbSvCnBfdg9lBUOpyFKcAK+lymtcmBKztOoOwZzyS3fQYNiLTRoD8LtpY67WU67jfrElyY2mVTcP7upTIq9DsRqTluX1m9EZ85+FTpJmh/jwNOIFwtIjTtsNtZ1ZRTmPB2ZZyFg57PfcTVyp583hd9ETZ0JV2sCikdHsScv421V+uszzhV6/0ZdN1p+fucM48uziU1pKvTSnF5BjRfOzO1cIDwOyNRsdXjJJUaYNp5T7AL9CisCJgWK2BlOLBSGTQQqJmnLQmNcja+EWhQr0aDXlLHeRSbv3gotxDgtJ6HFIRLXwZjJFINywy1gVLMvAFqLV9sEbkntLqxithTCKQnLtchb+J8a+GqrjksisNGoU/bgSQ+y57Zx2+eDS+gBL305yMaCW/FD4T9xfuUsoJTPwfnTzMhf4LY2HEoO5J072T2KgODZ5rEYreYOBvKUSbxn4=
+  bucket: musical.neutrino.public
+  region: us-west-2
+  endpoint: s3-website-us-west-2.amazonaws.com
+  local_dir: app/build/outputs/apk/
+  acl: public_read
+  skip_cleanup: true
+  edge: true
+  detect_encoding: true
