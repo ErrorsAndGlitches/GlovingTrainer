@@ -23,12 +23,11 @@ import java.util.concurrent.TimeUnit;
 
 public class MovesGeneratorFragment extends Fragment implements SpeechListener.SpeechCallback
 {
-    private static final int    TIMEOUT_MIN     = 1;
-    private static final int    TIMEOUT_MAX     = 20;
-    private static final int    TIMEOUT_DEFAULT = 5;
-    private static final float  DISABLED_ALPHA  = 0.5f;
-    private static final float  ENABLED_ALPHA   = 1.0f;
-    private static final String NEXT            = "next";
+    private static final int    TIMEOUT_MIN    = 1;
+    private static final int    TIMEOUT_MAX    = 20;
+    private static final float  DISABLED_ALPHA = 0.5f;
+    private static final float  ENABLED_ALPHA  = 1.0f;
+    private static final String NEXT           = "next";
 
 
     private final GlovingMoves                     mGlovingMoves;
@@ -37,9 +36,9 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
     private final MoveTriggerTypeOnCheckedListener mCheckedListener;
     private final TimeoutPickerScrollListener      mTimeoutScrollListener;
     private       SpeechListener                   mSpeechListener;
+    private       AppState                         mAppState;
     private       TextView                         mGlovingMoveTextView;
     private       NumberPicker                     mMoveTimeoutPicker;
-    private       boolean                          mShouldTimeoutMoves;
     private       int                              mTimeoutDuration;
 
     public MovesGeneratorFragment()
@@ -49,8 +48,6 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
         mGlovingMoveUpdater = new GlovingMoveUpdater();
         mCheckedListener = new MoveTriggerTypeOnCheckedListener();
         mTimeoutScrollListener = new TimeoutPickerScrollListener();
-        mShouldTimeoutMoves = false;
-        mTimeoutDuration = TIMEOUT_DEFAULT;
     }
 
     @Override
@@ -60,6 +57,9 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
         mSpeechListener = new SpeechListener(getActivity());
         AudioManager am = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
         am.setStreamMute(AudioManager.STREAM_MUSIC, true);
+
+        mAppState = new AppState(getActivity());
+        mTimeoutDuration = mAppState.getTimeoutDuration();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
         mMoveTimeoutPicker = (NumberPicker) view.findViewById(R.id.move_timeout_picker);
         mMoveTimeoutPicker.setMinValue(TIMEOUT_MIN);
         mMoveTimeoutPicker.setMaxValue(TIMEOUT_MAX);
-        mMoveTimeoutPicker.setValue(TIMEOUT_DEFAULT);
+        mMoveTimeoutPicker.setValue(mAppState.getTimeoutDuration());
         mMoveTimeoutPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         mMoveTimeoutPicker.setOnScrollListener(mTimeoutScrollListener);
 
@@ -87,8 +87,7 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
     {
         super.onResume();
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        disableTimeoutPicker();
-        mSpeechListener.startListening(this);
+        startMode(mAppState.getMode());
     }
 
     @Override
@@ -97,7 +96,7 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
         super.onPause();
         getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mSpeechListener.stopListening();
-        mShouldTimeoutMoves = false;
+        mGlovingMoveUpdater.stop();
     }
 
     @Override
@@ -129,26 +128,61 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
     private void setDuration(int duration)
     {
         mTimeoutDuration = duration;
+        mAppState.saveTimeoutDuration(duration);
     }
 
-    private void enableTimeoutPicker()
+    private void startMode(AppState.MovesMode mode)
     {
+        mCheckedListener.setModeAsChecked(mode);
+
+        switch (mode)
+        {
+        case Speech:
+            enableSpeechMode();
+            break;
+        case Timeout:
+            enableTimeoutMode();
+            break;
+        }
+    }
+
+    private void enableTimeoutMode()
+    {
+        mAppState.saveMode(AppState.MovesMode.Timeout);
+        mSpeechListener.stopListening();
         mMoveTimeoutPicker.setEnabled(true);
         mMoveTimeoutPicker.setAlpha(ENABLED_ALPHA);
+        mGlovingMoveUpdater.start();
     }
 
-    private void disableTimeoutPicker()
+    private void enableSpeechMode()
     {
+        mAppState.saveMode(AppState.MovesMode.Speech);
         mMoveTimeoutPicker.setEnabled(false);
         mMoveTimeoutPicker.setAlpha(DISABLED_ALPHA);
+        mSpeechListener.startListening(MovesGeneratorFragment.this);
+        mGlovingMoveUpdater.stop();
     }
 
     private final class GlovingMoveUpdater implements Runnable
     {
+        private boolean mRunTimeout;
+
+        public void start()
+        {
+            mRunTimeout = true;
+            run();
+        }
+
+        public void stop()
+        {
+            mRunTimeout = false;
+        }
+
         @Override
         public void run()
         {
-            if (mShouldTimeoutMoves)
+            if (mRunTimeout)
             {
                 setRandomMove();
                 mUpdateTextHandler.postDelayed(mGlovingMoveUpdater, TimeUnit.SECONDS.toMillis(getDuration()));
@@ -161,6 +195,23 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
         private RadioButton mSpeechRadioButton;
         private RadioButton mTimerRadioButton;
 
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId)
+        {
+            if (checkedId == mSpeechRadioButton.getId())
+            {
+                enableSpeechMode();
+            }
+            else if (checkedId == mTimerRadioButton.getId())
+            {
+                enableTimeoutMode();
+            }
+            else
+            {
+                Toast.makeText(getActivity(), "Unknown id: " + checkedId, Toast.LENGTH_SHORT).show();
+            }
+        }
+
         private void ingest(RadioGroup radioGroup)
         {
             radioGroup.setOnCheckedChangeListener(this);
@@ -168,25 +219,16 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
             mTimerRadioButton = (RadioButton) radioGroup.findViewById(R.id.timer_button);
         }
 
-        @Override
-        public void onCheckedChanged(RadioGroup group, int checkedId)
+        private void setModeAsChecked(AppState.MovesMode mode)
         {
-            if (checkedId == mSpeechRadioButton.getId())
+            switch (mode)
             {
-                mShouldTimeoutMoves = false;
-                disableTimeoutPicker();
-                mSpeechListener.startListening(MovesGeneratorFragment.this);
-            }
-            else if (checkedId == mTimerRadioButton.getId())
-            {
-                mSpeechListener.stopListening();
-                mShouldTimeoutMoves = true;
-                enableTimeoutPicker();
-                mGlovingMoveUpdater.run();
-            }
-            else
-            {
-                Toast.makeText(getActivity(), "Unknown id: " + checkedId, Toast.LENGTH_SHORT).show();
+            case Speech:
+                mSpeechRadioButton.setChecked(true);
+                break;
+            case Timeout:
+                mTimerRadioButton.setChecked(true);
+                break;
             }
         }
     }

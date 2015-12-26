@@ -27,7 +27,8 @@ import java.util.List;
 @PrepareForTest(GlovingMoves.class)
 public class GlovingMovesTest
 {
-    private static final String TEST_GLOVING_MOVES_RESOURCE = "test_gloving_moves.txt";
+    private static final String  TEST_GLOVING_MOVES_RESOURCE = "test_gloving_moves.txt";
+    private static       boolean s_isSetup                   = false;
 
     private static File getGlovingMovesFile()
     {
@@ -41,9 +42,14 @@ public class GlovingMovesTest
     public PowerMockRule rule = new PowerMockRule();
 
     @Before
-    public void setup() throws Exception
+    public void testSetup() throws Exception
     {
-        writeMovesFile();
+        if (!s_isSetup)
+        {
+            writeMovesFile();
+            s_isSetup = true;
+        }
+
         mGlovingMoves = GlovingMoves.getInstance();
     }
 
