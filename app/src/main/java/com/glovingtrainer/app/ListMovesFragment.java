@@ -6,7 +6,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ListMovesFragment extends Fragment
 {
@@ -22,9 +26,10 @@ public class ListMovesFragment extends Fragment
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_moves_list, container, false);
-        TextView textView = (TextView) view.findViewById(R.id.section_label);
-        textView.setText(getEnumeratedMoves());
-
+        ListView listView = (ListView) view.findViewById(R.id.moves_list);
+        listView.setAdapter(new ArrayAdapter<>(getActivity(),
+                                               android.R.layout.simple_list_item_1,
+                                               enumerateList(mGlovingMoves.getMoves())));
         return view;
     }
 
@@ -35,17 +40,15 @@ public class ListMovesFragment extends Fragment
         ((GlovingTrainerActivity) activity).onSectionAttached(1);
     }
 
-    private String getEnumeratedMoves()
+    private static List<String> enumerateList(List<String> list)
     {
-        StringBuilder builder = new StringBuilder();
-        int count = 0;
-        for (String move : mGlovingMoves.getMoves())
+        List<String> enumeratedList = new ArrayList<>(list.size());
+        int index = 0;
+        for (String string : list)
         {
-            builder.append(++count)
-                .append(") ")
-                .append(move)
-                .append('\n');
+            enumeratedList.add(String.valueOf(++index) + ". " + string);
         }
-        return builder.toString();
+
+        return enumeratedList;
     }
 }
