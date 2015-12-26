@@ -8,6 +8,8 @@ This application is used to help glovers practice, hone their skills, and inspir
 
 # How To Set Up
 
+The APK is published to S3 via Travis CI: <a href="https://s3-us-west-2.amazonaws.com/musical.neutrino.public/com.glovingtrainer.app-1.0-debug.apk">com.glovingtrainer.app-1.0-debug.apk</a>.
+
 The application is not very polished, but does what it fundamentally should. To upload a list of moves, create a file
 called "gloving_moves.txt" and push it to the "/sdcard/" on the device.
 
