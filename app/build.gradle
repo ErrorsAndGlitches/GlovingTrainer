@@ -1,16 +1,4 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
-    }
-}
 apply plugin: 'com.android.application'
-
-repositories {
-    jcenter()
-}
 
 android {
     compileSdkVersion 21
@@ -22,11 +10,30 @@ android {
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dexOptions {
+        jumboMode = true
+        incremental true
+        javaMaxHeapSize "4g"
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE.txt'
+    }
+
+    sourceSets {
+        androidTest {
+            java.srcDirs = ['src/test/java/']
         }
     }
 }
@@ -34,4 +41,19 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.1'
+
+    testCompile "junit:junit:4.12"
+    testCompile "org.robolectric:robolectric:${robolectricVersion}"
+    testCompile "org.powermock:powermock-module-junit4:1.6.2"
+    testCompile "org.powermock:powermock-module-junit4-rule:1.6.2"
+    testCompile "org.powermock:powermock-api-mockito:1.6.2"
+    testCompile "org.powermock:powermock-classloading-xstream:1.6.2"
+
+    // These aren't actually used - they're only here to achieve completion with IntelliJ
+    androidTestCompile "junit:junit:4.12"
+    androidTestCompile "org.robolectric:robolectric:${robolectricVersion}"
+    androidTestCompile "org.powermock:powermock-module-junit4:1.6.2"
+    androidTestCompile "org.powermock:powermock-module-junit4-rule:1.6.2"
+    androidTestCompile "org.powermock:powermock-api-mockito:1.6.2"
+    androidTestCompile "org.powermock:powermock-classloading-xstream:1.6.2"
 }

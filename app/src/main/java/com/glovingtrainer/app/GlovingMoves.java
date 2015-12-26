@@ -16,6 +16,7 @@ class GlovingMoves
     private static final    String       GLOVING_MOVES_FILENAME = "gloving_moves.txt";
     private static final    File         GLOVING_MOVES_FILE     = new File(Environment.getExternalStorageDirectory(),
                                                                            GLOVING_MOVES_FILENAME);
+    private static final    char         COMMENT_CHARACTER      = '#';
     private static final    Random       sRandom                = new Random(System.currentTimeMillis());
     private static volatile GlovingMoves s_instance             = null;
 
@@ -69,7 +70,13 @@ class GlovingMoves
             String line;
             while ((line = reader.readLine()) != null)
             {
-                glovingMoves.add(line.trim());
+                String trimmedLine = line.trim();
+                if (ignoreLine(trimmedLine))
+                {
+                    continue;
+                }
+
+                glovingMoves.add(trimmedLine);
             }
         }
         catch (IOException e)
@@ -78,5 +85,15 @@ class GlovingMoves
         }
 
         mGlovingMoves = Collections.unmodifiableList(glovingMoves);
+    }
+
+    private boolean ignoreLine(String line)
+    {
+        return line.isEmpty() || isComment(line);
+    }
+
+    private boolean isComment(String line)
+    {
+        return COMMENT_CHARACTER == line.charAt(0);
     }
 }
