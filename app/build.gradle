@@ -45,6 +45,7 @@ dependencies {
 
     testCompile "junit:junit:4.12"
     testCompile "org.robolectric:robolectric:${robolectricVersion}"
+    testCompile "org.robolectric:shadows-support-v4:${robolectricVersion}"
     testCompile "org.powermock:powermock-module-junit4:1.6.2"
     testCompile "org.powermock:powermock-module-junit4-rule:1.6.2"
     testCompile "org.powermock:powermock-api-mockito:1.6.2"
@@ -53,6 +54,7 @@ dependencies {
     // These aren't actually used - they're only here to achieve completion with IntelliJ
     androidTestCompile "junit:junit:4.12"
     androidTestCompile "org.robolectric:robolectric:${robolectricVersion}"
+    androidTestCompile "org.robolectric:shadows-support-v4:${robolectricVersion}"
     androidTestCompile "org.powermock:powermock-module-junit4:1.6.2"
     androidTestCompile "org.powermock:powermock-module-junit4-rule:1.6.2"
     androidTestCompile "org.powermock:powermock-api-mockito:1.6.2"

@@ -45,7 +45,7 @@ public class GlovingTrainerActivity extends AppCompatActivity implements Navigat
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void onSectionAttached(int number)
+    void onSectionAttached(int number)
     {
         switch (number)
         {

@@ -2,16 +2,18 @@ package com.glovingtrainer.app;
 
 import android.app.Activity;
 import android.content.Context;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -29,14 +31,14 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
     private static final float  ENABLED_ALPHA  = 1.0f;
     private static final String NEXT           = "next";
 
-
     private final GlovingMoves                     mGlovingMoves;
     private final Handler                          mUpdateTextHandler;
     private final GlovingMoveUpdater               mGlovingMoveUpdater;
-    private final MoveTriggerTypeOnCheckedListener mCheckedListener;
+    private final MoveTriggerTypeOnCheckedListener mTypeChangeListener;
     private final TimeoutPickerScrollListener      mTimeoutScrollListener;
     private       SpeechListener                   mSpeechListener;
     private       AppState                         mAppState;
+    private       TextToSpeechHandler              mTextToSpeechHandler;
     private       TextView                         mGlovingMoveTextView;
     private       NumberPicker                     mMoveTimeoutPicker;
     private       int                              mTimeoutDuration;
@@ -46,7 +48,7 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
         mGlovingMoves = GlovingMoves.getInstance();
         mUpdateTextHandler = new Handler(Looper.getMainLooper());
         mGlovingMoveUpdater = new GlovingMoveUpdater();
-        mCheckedListener = new MoveTriggerTypeOnCheckedListener();
+        mTypeChangeListener = new MoveTriggerTypeOnCheckedListener();
         mTimeoutScrollListener = new TimeoutPickerScrollListener();
     }
 
@@ -55,11 +57,9 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
     {
         super.onCreate(savedInstanceState);
         mSpeechListener = new SpeechListener(getActivity());
-        AudioManager am = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-        am.setStreamMute(AudioManager.STREAM_MUSIC, true);
-
         mAppState = new AppState(getActivity());
         mTimeoutDuration = mAppState.getTimeoutDuration();
+        mTextToSpeechHandler = new TextToSpeechHandler(getActivity());
     }
 
     @Override
@@ -76,9 +76,11 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
         mMoveTimeoutPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         mMoveTimeoutPicker.setOnScrollListener(mTimeoutScrollListener);
 
-        mCheckedListener.ingest((RadioGroup) view.findViewById(R.id.move_trigger_type_group));
+        mTypeChangeListener.ingest((RadioGroup) view.findViewById(R.id.move_trigger_type_group));
 
-        setRandomMove();
+        CheckBox textToSpeechCheckedBox = (CheckBox) view.findViewById(R.id.text_to_speech_checked_box);
+        textToSpeechCheckedBox.setOnCheckedChangeListener(mTextToSpeechHandler);
+
         return view;
     }
 
@@ -115,9 +117,11 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
         }
     }
 
-    private void setRandomMove()
+    void setRandomMove()
     {
-        mGlovingMoveTextView.setText(mGlovingMoves.getRandomMove());
+        String randomMove = mGlovingMoves.getRandomMove();
+        mGlovingMoveTextView.setText(randomMove);
+        mTextToSpeechHandler.onNewMove(randomMove);
     }
 
     private int getDuration()
@@ -133,17 +137,7 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
 
     private void startMode(AppState.MovesMode mode)
     {
-        mCheckedListener.setModeAsChecked(mode);
-
-        switch (mode)
-        {
-        case Speech:
-            enableSpeechMode();
-            break;
-        case Timeout:
-            enableTimeoutMode();
-            break;
-        }
+        mTypeChangeListener.setModeAsChecked(mode);
     }
 
     private void enableTimeoutMode()
@@ -168,17 +162,6 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
     {
         private boolean mRunTimeout;
 
-        public void start()
-        {
-            mRunTimeout = true;
-            run();
-        }
-
-        public void stop()
-        {
-            mRunTimeout = false;
-        }
-
         @Override
         public void run()
         {
@@ -187,6 +170,17 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
                 setRandomMove();
                 mUpdateTextHandler.postDelayed(mGlovingMoveUpdater, TimeUnit.SECONDS.toMillis(getDuration()));
             }
+        }
+
+        void start()
+        {
+            mRunTimeout = true;
+            run();
+        }
+
+        void stop()
+        {
+            mRunTimeout = false;
         }
     }
 
@@ -242,6 +236,51 @@ public class MovesGeneratorFragment extends Fragment implements SpeechListener.S
             {
                 setDuration(view.getValue());
             }
+        }
+    }
+
+    private final class TextToSpeechHandler implements CheckBox.OnCheckedChangeListener, TextToSpeech.OnInitListener
+    {
+        private final Context      mContext;
+        private       boolean      mEnabled;
+        private       boolean      mTextToSpeechEngineReady;
+        private       TextToSpeech mTextToSpeech;
+
+        TextToSpeechHandler(Context context)
+        {
+            mContext = context;
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+        {
+            mEnabled = isChecked;
+            if (mEnabled)
+            {
+                mTextToSpeech = new TextToSpeech(mContext, this);
+            }
+            else if (mTextToSpeech != null)
+            {
+                mTextToSpeech.shutdown();
+                mTextToSpeech = null;
+                mTextToSpeechEngineReady = false;
+            }
+        }
+
+        @Override
+        public void onInit(int status)
+        {
+            mTextToSpeechEngineReady = TextToSpeech.SUCCESS == status;
+        }
+
+        void onNewMove(String move)
+        {
+            if (!mEnabled || !mTextToSpeechEngineReady)
+            {
+                return;
+            }
+
+            mTextToSpeech.speak(move, TextToSpeech.QUEUE_ADD, null);
         }
     }
 }

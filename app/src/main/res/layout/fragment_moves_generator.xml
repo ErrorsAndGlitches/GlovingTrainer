@@ -8,27 +8,39 @@
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:stretchColumns="*">
 
-    <TableRow
-            android:paddingBottom="40dp">
-        <RadioGroup
+    <TableRow android:paddingBottom="10dip">
+        <TableLayout
                 android:layout_span="2"
-                android:orientation="horizontal"
-                android:layout_gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/move_trigger_type_group">
-            <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Speech"
-                    android:id="@+id/speech_button"/>
+                android:layout_gravity="center_vertical">
+            <TableRow
+                    android:layout_gravity="center_vertical"
+                    android:paddingBottom="20dip">
+                <CheckBox
+                        android:text="Text To Speech?"
+                        android:checked="false"
+                        android:id="@+id/text_to_speech_checked_box"/>
+            </TableRow>
 
-            <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Timer"
-                    android:id="@+id/timer_button"/>
-        </RadioGroup>
+            <TableRow>
+                <RadioGroup
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/move_trigger_type_group">
+                    <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Speech"
+                            android:id="@+id/speech_button"/>
+
+                    <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Timer"
+                            android:id="@+id/timer_button"/>
+                </RadioGroup>
+            </TableRow>
+        </TableLayout>
 
         <NumberPicker
                 android:layout_width="wrap_content"

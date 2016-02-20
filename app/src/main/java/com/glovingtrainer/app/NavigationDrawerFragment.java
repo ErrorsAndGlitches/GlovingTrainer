@@ -69,8 +69,7 @@ public class NavigationDrawerFragment extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         mDrawerListView = (ListView) inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -237,7 +236,7 @@ public class NavigationDrawerFragment extends Fragment
         mCurrentSelectedPosition = position;
         if (mDrawerListView != null)
         {
-            mDrawerListView.setItemChecked(position, true);
+            mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         }
         if (mDrawerLayout != null)
         {
@@ -245,7 +244,7 @@ public class NavigationDrawerFragment extends Fragment
         }
         if (mCallbacks != null)
         {
-            mCallbacks.onNavigationDrawerItemSelected(position);
+            mCallbacks.onNavigationDrawerItemSelected(mCurrentSelectedPosition);
         }
     }
 }
