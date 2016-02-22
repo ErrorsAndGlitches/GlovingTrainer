@@ -1,3 +1,5 @@
 #!/bin/bash
+#
+# parameter is the full package + class name
 
 ../gradlew  -i testDeb --tests $1

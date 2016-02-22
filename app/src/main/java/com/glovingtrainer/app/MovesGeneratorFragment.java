@@ -19,6 +19,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.glovingtrainer.app.reader.GlovingMoves;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

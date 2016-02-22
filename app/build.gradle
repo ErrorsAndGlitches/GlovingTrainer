@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "com.glovingtrainer.app"
         minSdkVersion 19
-        targetSdkVersion 21
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -41,22 +41,17 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'org.apache.commons:commons-lang3:3.0'
 
     testCompile "junit:junit:4.12"
     testCompile "org.robolectric:robolectric:${robolectricVersion}"
     testCompile "org.robolectric:shadows-support-v4:${robolectricVersion}"
-    testCompile "org.powermock:powermock-module-junit4:1.6.2"
-    testCompile "org.powermock:powermock-module-junit4-rule:1.6.2"
-    testCompile "org.powermock:powermock-api-mockito:1.6.2"
-    testCompile "org.powermock:powermock-classloading-xstream:1.6.2"
+    testCompile "org.mockito:mockito-core:1.+"
 
     // These aren't actually used - they're only here to achieve completion with IntelliJ
     androidTestCompile "junit:junit:4.12"
     androidTestCompile "org.robolectric:robolectric:${robolectricVersion}"
     androidTestCompile "org.robolectric:shadows-support-v4:${robolectricVersion}"
-    androidTestCompile "org.powermock:powermock-module-junit4:1.6.2"
-    androidTestCompile "org.powermock:powermock-module-junit4-rule:1.6.2"
-    androidTestCompile "org.powermock:powermock-api-mockito:1.6.2"
-    androidTestCompile "org.powermock:powermock-classloading-xstream:1.6.2"
+    androidTestCompile "org.mockito:mockito-core:1.+"
 }

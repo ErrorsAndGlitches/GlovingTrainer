@@ -5,10 +5,10 @@ import android.content.SharedPreferences;
 
 class AppState
 {
-    private static final String PREFS_NAME               = "APP_STATE_SHARED_PREFS";
+    static final         String PREFS_NAME               = "APP_STATE_SHARED_PREFS";
+    static final         int    DEFAULT_TIMEOUT_DURATION = 7;
     private static final String MOVES_MODE_KEY           = "MOVES_MODE";
     private static final String TIMEOUT_DURATION_KEY     = "TIMEOUT_DURATION";
-    private static final int    DEFAULT_TIMEOUT_DURATION = 7;
 
     private final SharedPreferences mPrefs;
 

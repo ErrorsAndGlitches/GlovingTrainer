@@ -6,8 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
+import com.glovingtrainer.app.reader.GlovingMoves;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +26,8 @@ public class ListMovesFragment extends Fragment
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_moves_list, container, false);
-        ListView listView = (ListView) view.findViewById(R.id.moves_list);
-        listView.setAdapter(new ArrayAdapter<>(getActivity(),
-                                               android.R.layout.simple_list_item_1,
-                                               enumerateList(mGlovingMoves.getMoves())));
+        ExpandableListView listView = (ExpandableListView) view.findViewById(R.id.move_groups);
+        listView.setAdapter(new ListMovesExpandableAdapter(getContext(), mGlovingMoves.getMoveGroups()));
         return view;
     }
 
@@ -40,7 +38,7 @@ public class ListMovesFragment extends Fragment
         ((GlovingTrainerActivity) activity).onSectionAttached(1);
     }
 
-    private static List<String> enumerateList(List<String> list)
+    static List<String> enumerateList(List<String> list)
     {
         List<String> enumeratedList = new ArrayList<>(list.size());
         int index = 0;
